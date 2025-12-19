@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>365 ABDO344 | النسخة الملكية</title>
+    <style>
+        :root { --gold: #ffd700; --bg: #0b0e11; --card: #1c2127; --blue: #007fff; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: white; font-family: sans-serif; overflow-x: hidden; }
+
+        /* شاشة الانطلاق (Splash Screen) */
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 9999; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; overflow: hidden;
+        }
+
+        /* تأثير التشويش (Glitch) */
+        .glitch {
+            font-size: 80px; font-weight: 900; color: var(--gold);
+            position: relative; text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
+            animation: glitch 725ms infinite;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
+            15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
+            16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+            100% { text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.0125em 0 #fc00ff, -0.025em -0.05em 0 #fffc00; }
+        }
+
+        /* تأثير الصاعقة (Lightning) */
+        .lightning {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; opacity: 0; pointer-events: none;
+        }
+        .flash-it { animation: flash 0.2s ease-out; }
+        @keyframes flash { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+
+        /* واجهة التطبيق الرئيسية (مخفية في البداية) */
+        #app-content { display: none; opacity: 0; transition: opacity 1s; }
+
+        .header { background: var(--card); padding: 15px; border-bottom: 2px solid var(--gold); text-align: center; }
+        .match-card { background: var(--card); margin: 10px; padding: 15px; border-radius: 10px; border-right: 4px solid var(--gold); }
+        .news-item { padding: 12px; border-bottom: 1px solid #333; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<audio id="thunderSound" src="https://www.soundjay.com/nature/thunder-strike-1.mp3"></audio>
+
+<div id="splash">
+    <div class="lightning" id="light"></div>
+    <div class="glitch" id="brand">ABDO344</div>
+    <p id="loading-text" style="color: var(--gold); margin-top: 20px;">جاري الاتصال بالسيرفر...</p>
+</div>
+
+<div id="app-content">
+    <div class="header">
+        <h1 style="color: var(--gold); margin: 0;">365 ABDO344 PRO</h1>
+        <small>آخر تحديث: منذ دقيقتين (تحديث كل 3 ساعات)</small>
+    </div>
+
+    <div style="padding: 10px;">
+        <h3 style="color: var(--gold);">⚡ مباريات ديسمبر 2025</h3>
+        <div class="match-card">
+            <div style="display:flex; justify-content: space-between;">
+                <span>برشلونة</span> <b style="color:var(--gold)">2 - 0</b> <span>خيتافي</span>
+            </div>
+            <center><small style="color:red">● مباشر د '70</small></center>
+        </div>
+
+        <h3 style="color: var(--gold);">📰 أهم 12 خبر رياضي موثوق</h3>
+        <div id="news-list">
+            </div>
+    </div>
+</div>
+
+<script>
+    const news = [
+        "فينيسيوس جونيور يقترب من حسم الكرة الذهبية لعام 2025.",
+        "ليفربول يحدد سعر بيع محمد صلاح في الانتقالات الشتوية القادمة.",
+        "النصر السعودي يكتسح العين الإماراتي في دوري أبطال آسيا للنخبة.",
+        "إصابة قوية تبعد كيليان مبابي عن الملاعب لمدة 3 أسابيع.",
+        "رسمياً: الكشف عن مواعيد مباريات كأس العالم للأندية 2025.",
+        "برشلونة يستهدف التعاقد مع موهبة الدوري الألماني الجديدة.",
+        "الهلال يواصل سلسلة الانتصارات ويتصدر الدوري السعودي بلا هزيمة.",
+        "مدرب مانشستر سيتي يلمح بالرحيل في نهاية الموسم الحالي.",
+        "تعديلات جديدة من الفيفا على تقنية الفيديو (VAR) لزيادة السرعة.",
+        "إيطاليا تفوز على فرنسا في دوري الأمم الأوروبية بنتيجة 2-1.",
+        "الأهلي المصري يعلن جاهزية حارس المرمى لمباراة القمة.",
+        "سوق الانتقالات: تشيلسي يخصص 100 مليون يورو لضم مهاجم جديد."
+    ];
+
+    window.onload = function() {
+        const sound = document.getElementById('thunderSound');
+        const light = document.getElementById('light');
+        
+        // البدء بعد 1.5 ثانية من التشويش
+        setTimeout(() => {
+            sound.play(); // تشغيل صوت الصاعقة
+            light.classList.add('flash-it'); // وميض الصاعقة
+            
+            setTimeout(() => {
+                document.getElementById('splash').style.display = 'none';
+                const app = document.getElementById('app-content');
+                app.style.display = 'block';
+                setTimeout(() => { app.style.opacity = '1'; }, 50);
+                loadNews();
+            }, 500);
+        }, 2500);
+    };
+
+    function loadNews() {
+        const list = document.getElementById('news-list');
+        list.innerHTML = news.map((n, i) => `
+            <div class="news-item">
+                <span style="color:var(--gold); font-weight:bold;">${i+1}.</span> ${n}
+            </div>
+        `).join('');
+    }
+
+    // نظام التحديث كل 3 ساعات
+    setInterval(() => { location.reload(); }, 10800000);
+</script>
+
+</body>
+</html>
